@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "armutsmp_dupe_safe",
+  "version": "${version}",
+  "name": "ArmutSMP Dupe Safe",
+  "description": "ArmutSMP icin /dupe komutu.",
+  "authors": [
+    "ArmutSMP"
+  ],
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.armutsmp.dupesafe.ArmutSmpDupeSafeClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.5",
+    "minecraft": "~1.21.1",
+    "fabric-api": "*"
+  }
+}
