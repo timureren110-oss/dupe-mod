@@ -1,56 +1,35 @@
-package com.armutsmp.dupesafe;
+name: ArmutSMP Modunu Derle
 
-import com.mojang.brigadier.CommandDispatcher;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
-public class ArmutSmpDupeSafeClient implements ClientModInitializer {
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-    private static final String PAYMENT_COMMAND =
-            "/pay Bentata310 10m";
+    steps:
+      - name: Kodu indir
+        uses: actions/checkout@v4
 
-    @Override
-    public void onInitializeClient() {
+      - name: Java 21 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
 
-        ClientCommandRegistrationCallback.EVENT.register(
-                (dispatcher, registryAccess) -> register(dispatcher)
-        );
-    }
+      - name: Gradle kur
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.2.0'
 
-    private void register(
-            CommandDispatcher<
-                    net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-            > dispatcher
-    ) {
+      - name: Modu derle
+        run: gradle build
 
-        dispatcher.register(
-                ClientCommandManager.literal("dupe")
-                        .executes(context -> {
-
-                            MinecraftClient client =
-                                    MinecraftClient.getInstance();
-
-                            if (client.keyboard != null) {
-                                client.keyboard.setClipboard(
-                                        PAYMENT_COMMAND
-                                );
-                            }
-
-                            if (client.player != null) {
-                                client.player.sendMessage(
-                                        Text.literal(
-                                                "§aArmutSMP §7» §fKomut panoya kopyalandi: §e"
-                                                        + PAYMENT_COMMAND
-                                        ),
-                                        false
-                                );
-                            }
-
-                            return 1;
-                        })
-        );
-    }
-}
+      - name: JAR dosyasini yukle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ArmutSMP-Dupe-Mod
+          path: build/libs/*.jar
